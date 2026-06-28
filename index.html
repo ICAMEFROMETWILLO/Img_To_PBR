@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PBR Texture Engine - Ultimate Map Generator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #12141c;
+            color: #e2e8f0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #232936;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #f1f5f9;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .app-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 20px;
+        }
+
+        .sidebar {
+            background-color: #1a1d29;
+            border: 1px solid #232936;
+            border-radius: 8px;
+            padding: 20px;
+            height: fit-content;
+        }
+
+        .main-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748b;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .drop-zone {
+            border: 2px dashed #3b82f6;
+            background-color: #1e2230;
+            border-radius: 6px;
+            padding: 30px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-bottom: 20px;
+        }
+
+        .drop-zone:hover {
+            background-color: #24293c;
+        }
+
+        .drop-zone p {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        .control-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        select, input[type="range"], button {
+            width: 100%;
+            background-color: #0f111a;
+            border: 1px solid #283046;
+            color: #f1f5f9;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            outline: none;
+        }
+
+        select:focus {
+            border-color: #3b82f6;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            padding: 0;
+            height: 6px;
+            background: #0f111a;
+            border-radius: 3px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+        }
+
+        .range-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .range-val {
+            font-size: 12px;
+            color: #64748b;
+            min-width: 25px;
+            text-align: right;
+        }
+
+        .btn-primary {
+            background-color: #3b82f6;
+            color: #ffffff;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 10px;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+
+        .btn-primary:disabled {
+            background-color: #1e293b;
+            color: #64748b;
+            cursor: not-allowed;
+            border: 1px solid #0f111a;
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .map-card {
+            background-color: #1a1d29;
+            border: 1px solid #232936;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .map-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .map-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+
+        .canvas-container {
+            background-color: #0f111a;
+            aspect-ratio: 1/1;
+            width: 100%;
+            border-radius: 4px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #232936;
+        }
+
+        canvas {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .ad-placeholder {
+            margin-top: 20px;
+            border: 1px dashed #334155;
+            border-radius: 6px;
+            background-color: #151821;
+            padding: 15px;
+            text-align: center;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .ad-tag {
+            font-size: 9px;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .ad-text {
+            font-size: 12px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>PBR Texture Engine</h1>
+        <div class="subtitle">Static Browser-Based Engine-Specific Map Generator</div>
+    </header>
+
+    <div class="app-grid">
+        <div class="sidebar">
+            <div class="section-title">Source Asset</div>
+            <div class="drop-zone" id="dropZone">
+                <p>Drag & Drop Image<br><span style="font-size: 11px; color: #64748b;">PNG, JPG, AVIF, WEBP</span></p>
+                <input type="file" id="fileInput" accept="image/*" style="display: none;">
+            </div>
+
+            <div class="section-title">Pipeline Target</div>
+            <div class="control-group">
+                <label for="enginePreset">Target Engine Preset</label>
+                <select id="enginePreset">
+                    <option value="unity-standard">Unity (Standard Metallic)</option>
+                    <option value="unreal-4">Unreal Engine 4 / 5</option>
+                    <option value="godot-4">Godot 4.x</option>
+                </select>
+            </div>
+
+            <div class="section-title">Export Packaging</div>
+            <div class="control-group">
+                <label for="exportFormat">File Format</label>
+                <select id="exportFormat">
+                    <option value="image/png">PNG (.png)</option>
+                    <option value="image/jpeg">JPEG (.jpg)</option>
+                    <option value="image/webp">WEBP (.webp)</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="normalStrength">Normal Map Intensity</label>
+                <div class="range-container">
+                    <input type="range" id="normalStrength" min="1" max="10" step="0.5" value="2.5">
+                    <div class="range-val" id="normalVal">2.5</div>
+                </div>
+            </div>
+
+            <button class="btn-primary" id="processBtn" disabled>Generate Maps</button>
+            
+            <div class="ad-placeholder">
+                <div class="ad-tag">Sponsored Link</div>
+                <div class="ad-text" id="gitads-box">GitAds Placement Slot</div>
+            </div>
+        </div>
+
+        <div class="main-panel">
+            <div class="section-title">Generated Map Previews</div>
+            <div class="preview-grid">
+                <div class="map-card">
+                    <div class="map-header">
+                        <span class="map-title">Albedo / Base Color</span>
+                        <button style="width: auto; padding: 4px 8px; font-size: 11px;" onclick="downloadCanvas('canvasAlbedo', 'Albedo')">Download</button>
+                    </div>
+                    <div class="canvas-container">
+                        <canvas id="canvasAlbedo"></canvas>
+                    </div>
+                </div>
+
+                <div class="map-card">
+                    <div class="map-header">
+                        <span class="map-title">Normal Map</span>
+                        <button style="width: auto; padding: 4px 8px; font-size: 11px;" onclick="downloadCanvas('canvasNormal', 'Normal')">Download</button>
+                    </div>
+                    <div class="canvas-container">
+                        <canvas id="canvasNormal"></canvas>
+                    </div>
+                </div>
+
+                <div class="map-card">
+                    <div class="map-header">
+                        <span class="map-title" id="titlePacked">Packed Map (Mask / Surface)</span>
+                        <button style="width: auto; padding: 4px 8px; font-size: 11px;" onclick="downloadCanvas('canvasPacked', 'Packed')">Download</button>
+                    </div>
+                    <div class="canvas-container">
+                        <canvas id="canvasPacked"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const processBtn = document.getElementById('processBtn');
+    const enginePreset = document.getElementById('enginePreset');
+    const exportFormat = document.getElementById('exportFormat');
+    const normalStrength = document.getElementById('normalStrength');
+    const normalVal = document.getElementById('normalVal');
+    const titlePacked = document.getElementById('titlePacked');
+
+    let sourceImage = null;
+
+    const canvasAlbedo = document.getElementById('canvasAlbedo');
+    const canvasNormal = document.getElementById('canvasNormal');
+    const canvasPacked = document.getElementById('canvasPacked');
+
+    const ctxAlbedo = canvasAlbedo.getContext('2d');
+    const ctxNormal = canvasNormal.getContext('2d');
+    const ctxPacked = canvasPacked.getContext('2d');
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    
+    fileInput.addEventListener('change', handleFileSelect);
+    
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.style.backgroundColor = '#24293c';
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.style.backgroundColor = '#1e2230';
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.style.backgroundColor = '#1e2230';
+        if (e.dataTransfer.files.length > 0) {
+            fileInput.files = e.dataTransfer.files;
+            handleFileSelect();
+        }
+    });
+
+    normalStrength.addEventListener('input', (e) => {
+        normalVal.textContent = e.target.value;
+    });
+
+    enginePreset.addEventListener('change', updateLabels);
+
+    function updateLabels() {
+        const preset = enginePreset.value;
+        if (preset === 'unity-standard') {
+            titlePacked.textContent = "Metallic Smoothness (RGBA)";
+        } else if (preset === 'unreal-4') {
+            titlePacked.textContent = "ORM Map (R:AO, G:Rough, B:Metal)";
+        } else if (preset === 'godot-4') {
+            titlePacked.textContent = "Material Mask (R:Metal, G:Rough)";
+        }
+    }
+
+    function handleFileSelect() {
+        const file = fileInput.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            sourceImage = new Image();
+            sourceImage.onload = function() {
+                processBtn.disabled = false;
+                dropZone.querySelector('p').innerHTML = `Active: <strong>${file.name}</strong><br><span style="font-size: 11px; color: #64748b;">Ready to generate</span>`;
+            };
+            sourceImage.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    processBtn.addEventListener('click', () => {
+        if (!sourceImage) return;
+
+        const w = sourceImage.width;
+        const h = sourceImage.height;
+
+        canvasAlbedo.width = w; canvasAlbedo.height = h;
+        canvasNormal.width = w; canvasNormal.height = h;
+        canvasPacked.width = w; canvasPacked.height = h;
+
+        ctxAlbedo.drawImage(sourceImage, 0, 0);
+        
+        const imgData = ctxAlbedo.getImageData(0, 0, w, h);
+        
+        generateNormalMap(imgData, w, h);
+        generatePackedMap(imgData, w, h);
+    });
+
+    function generateNormalMap(imgData, w, h) {
+        const src = imgData.data;
+        const normImg = ctxNormal.createImageData(w, h);
+        const dst = normImg.data;
+        const strength = parseFloat(normalStrength.value);
+        const invertY = enginePreset.value === 'unreal-4';
+
+        for (let y = 0; y < h; y++) {
+            for (let x = 0; x < w; x++) {
+                let tl = getMono(src, x - 1, y - 1, w, h);
+                let t  = getMono(src, x,     y - 1, w, h);
+                let tr = getMono(src, x + 1, y - 1, w, h);
+                let l  = getMono(src, x - 1, y,     w, h);
+                let r  = getMono(src, x + 1, y,     w, h);
+                let bl = getMono(src, x - 1, y + 1, w, h);
+                let b  = getMono(src, x,     y + 1, w, h);
+                let br = getMono(src, x + 1, y + 1, w, h);
+              
+                let dx = (tr + 2.0 * r + br) - (tl + 2.0 * l + bl);
+                let dy = (bl + 2.0 * b + br) - (tl + 2.0 * t + tr);
+                let dz = 1.0 / strength;
+
+                let len = Math.sqrt(dx * dx + dy * dy + dz * dz);
+                dx /= len;
+                dy /= len;
+                dz /= len;
+
+                if (invertY) {
+                    dy = -dy;
+                }
+
+                const idx = (y * w + x) * 4;
+                dst[idx]     = Math.floor((dx + 1.0) * 127.5);
+                dst[idx + 1] = Math.floor((dy + 1.0) * 127.5);
+                dst[idx + 2] = Math.floor((dz + 1.0) * 127.5);
+                dst[idx + 3] = 255;
+            }
+        }
+        ctxNormal.putImageData(normImg, 0, 0);
+    }
+
+    function generatePackedMap(imgData, w, h) {
+        const src = imgData.data;
+        const packImg = ctxPacked.createImageData(w, h);
+        const dst = packImg.data;
+        const preset = enginePreset.value;
+
+        for (let i = 0; i < src.length; i += 4) {
+            let r = src[i];
+            let g = src[i+1];
+            let b = src[i+2];
+            let gray = (r * 0.299 + g * 0.587 + b * 0.114);
+
+            let height = gray; 
+            let roughness = 255 - gray; 
+            let metallic = (gray > 120) ? 40 : 0; 
+            let ao = Math.min(255, gray + 50); 
+
+            if (preset === 'unity-standard') {
+                dst[i]     = metallic; 
+                dst[i + 1] = 0;        
+                dst[i + 2] = 0;        
+                dst[i + 3] = 255 - roughness; 
+            } else if (preset === 'unreal-4') {
+                dst[i]     = ao;        
+                dst[i + 1] = roughness; 
+                dst[i + 2] = metallic;  
+                dst[i + 3] = 255;
+            } else if (preset === 'godot-4') {
+                dst[i]     = metallic;  
+                dst[i + 1] = roughness; 
+                dst[i + 2] = 0;        
+                dst[i + 3] = 255;
+            }
+        }
+        ctxPacked.putImageData(packImg, 0, 0);
+    }
+
+    function getMono(src, x, y, w, h) {
+        if (x < 0) x = 0;
+        if (x >= w) x = w - 1;
+        if (y < 0) y = 0;
+        if (y >= h) y = h - 1;
+        const idx = (y * w + x) * 4;
+        return (src[idx] * 0.299 + src[idx + 1] * 0.587 + src[idx + 2] * 0.114) / 255.0;
+    }
+
+    function downloadCanvas(canvasId, mapName) {
+        const canvas = document.getElementById(canvasId);
+        const mimeType = exportFormat.value;
+        let ext = '.png';
+        if (mimeType === 'image/jpeg') ext = '.jpg';
+        if (mimeType === 'image/webp') ext = '.webp';
+
+        const link = document.createElement('a');
+        link.download = `${mapName}_${enginePreset.value}${ext}`;
+        link.href = canvas.toDataURL(mimeType, 1.0);
+        link.click();
+    }
+
+    updateLabels();
+</script>
+
+</body>
+</html>
