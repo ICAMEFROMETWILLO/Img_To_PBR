@@ -12,7 +12,9 @@ Features:
 - Quick image editing that includes flipping horizontally and vertically, rotating 90 degrees, and converting to grayscale.
 
 ## GitAds Sponsored
+
 [![Sponsored by GitAds](https://gitads.dev/v1/ad-serve?source=icamefrometwillo/img_to_pbr@github)](https://gitads.dev/v1/ad-track?source=icamefrometwillo/img_to_pbr@github)
+
 
 I am a one person team paying for the domain and everything so please click this to support me and help me add new features.
 
