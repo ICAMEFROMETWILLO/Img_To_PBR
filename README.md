@@ -1,8 +1,13 @@
 # Image_To_PBR (Texture engine plus)
 Input any image and convert it to Normal Map, height map, specular map, or any others you might need and do it in a blink!
 
-How to run:
-Just open it in [this link!](https://image2pbr.org/)
+## LINK TO OPEN
+## [image2pbr.org](https://image2pbr.org/)
+
+How to use:
+- Open it in [image2pbr.org](https://image2pbr.org/)
+- Add image then tweak the parameters
+- Click generate and export your image.
 
 Features:
 - Supports PNG, JPEG, WEBP, and BMP.
@@ -11,6 +16,8 @@ Features:
 - Built in engine presets of: Unity Metalic, Unity Specular, UE4 and UE5, and even Godot 4.x!
 - Quick image editing that includes flipping horizontally and vertically, rotating 90 degrees, and converting to grayscale.
 
+
+## Support Us ↓
 ## GitAds Sponsored
 
 [![Sponsored by GitAds](https://gitads.dev/v1/ad-serve?source=icamefrometwillo/img_to_pbr@github)](https://gitads.dev/v1/ad-track?source=icamefrometwillo/img_to_pbr@github)
@@ -18,5 +25,8 @@ Features:
 
 I am a one person team paying for the domain and everything so please click this to support me and help me add new features.
 
+## License
+
+Distributed under the MIT License, See the license file for more info.
 
 <!-- GitAds-Verify: JIHYCXFU7PDTICSFBN71F3X8OET5HQ6D -->
