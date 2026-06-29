@@ -1,6 +1,9 @@
 # Image_To_PBR (Texture engine plus)
 Input any image and convert it to Normal Map, height map, specular map, or any others you might need and do it in a blink!
 
+How to run:
+Just open it in [this link!](https://image2pbr.org/)
+
 Features:
 - Supports PNG, JPEG, WEBP, and BMP.
 - Canvas mode to draw on your images, make textures and more!
