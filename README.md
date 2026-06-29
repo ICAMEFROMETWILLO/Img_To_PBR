@@ -11,4 +11,8 @@ Features:
 - Built in engine presets of: Unity Metalic, Unity Specular, UE4 and UE5, and even Godot 4.x!
 - Quick image editing that includes flipping horizontally and vertically, rotating 90 degrees, and converting to grayscale.
 
+## GitAds Sponsored
+[![Sponsored by GitAds](https://gitads.dev/v1/ad-serve?source=icamefrometwillo/img_to_pbr@github)](https://gitads.dev/v1/ad-track?source=icamefrometwillo/img_to_pbr@github)
+
+
 <!-- GitAds-Verify: JIHYCXFU7PDTICSFBN71F3X8OET5HQ6D -->
