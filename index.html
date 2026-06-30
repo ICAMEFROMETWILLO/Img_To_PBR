@@ -880,7 +880,6 @@
 
         const link = document.createElement('a');
         link.download = `${mapName}_${enginePreset.value}${ext}`;
-        link.href = canvas.toToDataURL ? canvas.toDataURL(mimeType, 1.0) : canvas.toDataURL(mimeType);
         link.href = canvas.toDataURL(mimeType, 1.0);
         link.click();
     }
